@@ -7,6 +7,7 @@ edited.
 
 * Version: 0.1
 * License: BSD 3-clause
+* Python 3.8+
 
 ## Usage
 
@@ -65,7 +66,7 @@ variables:
   Generate this in GitHub. 
 * USERNAME: does not need to be a real user, just needed for 
   commit messages. 
-* USER_EMAIL: does not need to be a real user, just needed for 
+* USER_EMAIL: does not need to be a real email address, just needed for 
     commit messages.
 
 The Docker image will automatically clone the wiki, insert the page 
