@@ -46,7 +46,7 @@ Tags can be hierarchical, with segments separated by a hyphen ('-').
 For example, `Tag_Level_One-Level_Two-Subtag_Level_Three` will produce 
 a structure that looks like:  
 
->##Tag Level One
+>## Tag Level One
 >### Level Two
 >#### Subtag Level Three
 
