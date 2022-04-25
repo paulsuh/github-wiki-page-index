@@ -24,7 +24,7 @@ git config user.name "${USERNAME}"
 git config user.email "${USER_EMAIL}"
 
 # run the script to produce a new file list in Home.md
-python /generate_wiki_file_index.py -i "/checkoutdir/$(basename "${REPO_NAME}.wiki")"
+python /generate_wiki_file_index.py --insert "/checkoutdir/$(basename "${REPO_NAME}.wiki")"
 
 # commit and push the change back to the repo
 git add Home.md

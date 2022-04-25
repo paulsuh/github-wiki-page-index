@@ -61,7 +61,7 @@ def insert_file_list() -> None:
                 if one_line == "<!--end TOC-->\n":
                     break
 
-            # Either we found the old TOC and skipped to the bottom of it
+            # Either we found the old TOC and skipped to the bottom of it,
             # or we never found the bottom marker and skipped all of the rest
             # of the file.
             # In either case write the new TOC
