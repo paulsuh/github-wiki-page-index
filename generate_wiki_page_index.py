@@ -6,7 +6,7 @@ from os.path import splitext
 
 
 """
-Generates file list for a wiki
+Generates page index for a wiki
 """
 
 # excludes files and folders that start with a dot, like .git or .DS_Store
@@ -19,67 +19,70 @@ file_exclusion_re: re.Pattern = re.compile(
 dash_to_space = str.maketrans("-", " ")
 underscore_to_space = str.maketrans("_", " ")
 
+start_marker = "<!--start Page Index-->\n"
+end_marker = "<!--end Page Index-->\n"
 
-def insert_file_list() -> None:
+
+def insert_page_index() -> None:
     """
-    Generate the Table of Contents and place the text into the Home.md file.
-    If the HTML comments <!--start TOC--> and <!--end TOC--> exist then the
-    ToC will be inserted between them. Otherwise, the ToC will be placed at
-    the start of the file and the comments will be added. Text above the
-    start and text below the end will be preserved.
+    Generate the Page Index and place the text into the Home.md file.
+    If the HTML comments <!--start Page Index--> and <!--end Page Index-->
+    exist then the Page Index will be inserted between them. Otherwise, the
+    Page Index will be placed at the start of the file and the comments will
+    be added. Text above the start marker and text below the end marker will
+    be preserved.
     """
 
     rename("Home.md", "Home.md.old")
     with open("Home.md", "w") as new_home_md:
         with open("Home.md.old", "r") as old_home_md:
 
-            # Read and dump out text before the ToC
+            # Read and dump out text before the Page Index
             while one_line := old_home_md.readline():
-                if one_line == "<!--start TOC-->\n":
-                    # We reached the top of the old TOC
+                if one_line == start_marker:
+                    # We reached the top of the old Page Index
                     break
                 else:
-                    # We haven't reached the top of the old TOC yet so
+                    # We haven't reached the top of the old Page Index yet so
                     # transfer the old content to the new file.
                     new_home_md.write(one_line)
 
             if len(one_line) == 0:
-                # reached EOF without finding an existing TOC
-                # Put the TOC at the beginning of the file, then
-                # rewind and put the rest of the old home file's content
+                # reached EOF without finding an existing Page Index
+                # Put the Page Index at the beginning of the file, then
+                # rewind and put the rest of the old home page's content
                 # after that.
                 # This is slightly inefficient, but good enough for this purpose
                 new_home_md.seek(0)
-                new_home_md.write(generate_file_list())
+                new_home_md.write(generate_page_index())
                 old_home_md.seek(0)
                 for existing_line in old_home_md:
                     new_home_md.write(existing_line)
                 return
 
-            # We found the old TOC, so skip lines until the end of the old TOC
+            # We found the old Page Index, so skip lines until the end of the old Page Index
             while one_line := old_home_md.readline():
-                if one_line == "<!--end TOC-->\n":
+                if one_line == end_marker:
                     break
 
-            # Either we found the old TOC and skipped to the bottom of it,
+            # Either we found the old Page Index and skipped to the bottom of it,
             # or we never found the bottom marker and skipped all of the rest
             # of the file.
-            # In either case write the new TOC
-            new_home_md.write(generate_file_list())
+            # In either case write the new Page Index
+            new_home_md.write(generate_page_index())
 
-            # Read and dump out text after the ToC
+            # Read and dump out text after the Page Index
             while one_line := old_home_md.readline():
                 new_home_md.write(one_line)
 
 
-def generate_file_list() -> str:
+def generate_page_index() -> str:
     """
-    Scan the wiki files and produce a Table of Contents.
-    The ToC uses MediaWiki-style links because GitHub Wikis are bugged.
+    Scan the wiki pages and produce a Page Index.
 
-    :return: Markdown-formatted (with MediaWiki-style links) ToC
+    :return: Markdown-formatted Page Index
     """
-    result: str = "<!--start TOC-->\n\n# Table of Contents\n\n"
+    result: str = f"{start_marker}\n# Page Index\n\n"
     tag_tree: dict = {
         "untagged": set()
     }
@@ -92,31 +95,34 @@ def generate_file_list() -> str:
         if f.is_file() and not file_exclusion_re.match(f.name)
     ]
 
+    # openhook is to handle files with screwed up Unicode encoding, otherwise fileinput
+    # crashes
     with fileinput.input(files_to_scan,
                          openhook=lambda filename, mode: open(filename, mode, errors="replace")) as f:
         for one_line in f:
             fn = fileinput.filename()
-            # assume the file is untagged
+
+            # assume the page is untagged
             tag_tree["untagged"].add(fn)
             if len(tags_list := _scan_line_for_tags(one_line)) > 0:
-                # tag found, remove the file from the list of completely untagged files
+                # tag found, remove the page from the list of completely untagged files
                 # and add it to one of the tag entries
                 tag_tree["untagged"].discard(fn)
                 for one_tag in tags_list:
-                    _add_filename_to_tag_dict(fn, one_tag, tag_tree)
+                    _add_page_to_tag_dict(fn, one_tag, tag_tree)
                 fileinput.nextfile()
 
-    result += _render_tag_tree(tag_tree) + "<!--end TOC-->\n"
+    result += _render_tag_tree(tag_tree) + end_marker
 
     return result
 
 
 def _scan_line_for_tags(line_to_scan: str) -> list[str]:
     """
-    Scan a single file for tags. This is a line that looks like:
+    Scan a single line for tags. This is a line that looks like:
     Tags: Tag_One Tag_Two Tag_Three-Sub_Tag_A
 
-    :param line_to_scan: path to a file to be scanned
+    :param line_to_scan: line to be scanned
     :return: list of tags in that line
     """
     if line_to_scan.startswith("Tags: "):
@@ -127,33 +133,33 @@ def _scan_line_for_tags(line_to_scan: str) -> list[str]:
         return []
 
 
-def _add_filename_to_tag_dict(filename: str, tag_seq: str, tag_dict: dict[str, any]) -> None:
+def _add_page_to_tag_dict(page: str, tag_seq: str, tag_dict: dict[str, any]) -> None:
     """
     Add the filename to the tag dict. The dict structure looks like:
     {
-        "untagged": {"file1", "file2", "file3"}
+        "untagged": {"page1", "page2", "page3"}
         "tag1": {
-            "untagged": ["file4"]
+            "untagged": ["page4"]
         }
         "tag2": {
             "untagged": {}
             "sub-tag3": {
-                "untagged": {"file5", "file6"}
+                "untagged": {"page5", "page6"}
             }
         }
         "tag4": {
-            "untagged": {"file5"}
+            "untagged": {"page5"}
         }
     }
 
-    :param filename: name of the file to be added to the tag_dict
+    :param page: name of the page to be added to the tag_dict
     :param tag_seq: list of tags to be added
     :param tag_dict: dictionary where the tags will be added
     """
     current_dict = tag_dict
     for current_level in tag_seq.split("-"):
         current_dict = current_dict.setdefault(current_level, dict())
-    current_dict.setdefault("untagged", set()).add(filename)
+    current_dict.setdefault("untagged", set()).add(page)
 
 
 def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
@@ -185,18 +191,18 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description="Generate a File List for a GitHub Wiki. ")
+    parser = argparse.ArgumentParser(description="Generate a Page Index for a GitHub Wiki. ")
     parser.add_argument("wiki_dir", help="Path to the clone of your GitHub Wiki")
     parser.add_argument("-i", "--insert",
-                        help="Automatically insert the file list into your Home.md file",
+                        help="Automatically insert the Page Index into your Home.md file",
                         action="store_true")
     args = parser.parse_args()
 
     chdir(args.wiki_dir)
 
     if args.insert:
-        print("Generating ToC and inserting into Home.md")
-        insert_file_list()
+        print("Generating Page Index and inserting into Home.md")
+        insert_page_index()
     else:
-        print("Generating ToC and printing to stdout")
-        print(generate_file_list())
+        print("Generating Page Index and printing to stdout")
+        print(generate_page_index())
