@@ -5,7 +5,7 @@ optionally insert it into the Home.md file. It can also be set up as
 a GitHub Action to auto-update the Home.md file when the wiki is 
 edited. 
 
-* Version: 0.1
+* Version: 0.2.1
 * License: BSD 3-clause
 * Python 3.8+
 
@@ -55,13 +55,22 @@ a structure that looks like:
 >## Tag Level One
 >### Level Two
 >#### Subtag Level Three
+> Title of the Page
 
 The first part of the page index will the pages that have no tags, 
 listed in alphabetical order. Then, each tag will have a section 
 listing the pages that have that tag, and then subheadings for pages 
 that are tagged with hierarchical tags. 
 
-## Deployment
+## Automated Deployment
+
+There are two suggested ways to deploy githubwikipageindex: 
+
+1. GitHub Action
+2. Webhook
+
+To use this as a GitHub Action, use the GitHub_Action.yaml file as 
+your action metadata. 
 
 Use the Docker image and supply the following four environment 
 variables: 

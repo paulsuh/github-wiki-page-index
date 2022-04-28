@@ -10,6 +10,10 @@
 #
 # USER_EMAIL: Email address of the user. Utilized as part of the commit action
 
+if [ -z "${REPO_NAME}" ]; then
+  echo "REPO_NAME environment variable not set. Using the current repo GITHUB_REPOSITORY."
+  REPO_NAME="${GITHUB_REPOSITORY}"
+fi
 
 # clone the wiki
 cd /checkoutdir
@@ -18,7 +22,7 @@ git clone "https://${AUTH_TOKEN}@github.com/${REPO_NAME}.wiki.git"
 
 cd $(basename "${REPO_NAME}.wiki")
 
-git config user.name "${USERNAME}"
+git config user.name "${USER_NAME}"
 git config user.email "${USER_EMAIL}"
 
 # run the script to produce a new page index in Home.md
