@@ -7,7 +7,7 @@ RUN mkdir /checkoutdir
 RUN pip install githubwikipageindex
 
 COPY entrypoint.sh /entrypoint.sh
-COPY ../generate_wiki_page_index.py /generate_wiki_page_index.py
+COPY ../src/generate_wiki_page_index.py /generate_wiki_page_index.py
 
 RUN /bin/chmod a+x /entrypoint.sh
 RUN /bin/chmod a+x /generate_wiki_page_index.py
