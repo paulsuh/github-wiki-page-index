@@ -23,5 +23,5 @@ jobs:
         id: indexer
         with:
           AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_MAIL: ${{ secrets.YOUR_EMAIL }}
-          GH_NAME: ${{ github.repository_owner }}
+          USER_EMAIL: ${{ secrets.YOUR_EMAIL }}
+          USER_NAME: ${{ github.repository_owner }}
