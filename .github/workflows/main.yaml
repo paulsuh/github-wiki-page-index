@@ -16,6 +16,8 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Clone Repo
+        uses: actions/checkout@v3
       - name: build-index
         uses: ./
         id: indexer
