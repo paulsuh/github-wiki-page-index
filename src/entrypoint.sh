@@ -20,16 +20,19 @@ cd /checkoutdir
 
 git clone "https://${AUTH_TOKEN}@github.com/${REPO_NAME}.wiki.git"
 
-cd $(basename "${REPO_NAME}.wiki")
+REPO_WIKI=$(basename "${REPO_NAME}")".wiki"
+
+cd "${REPO_WIKI}"
 
 git config user.name "${USER_NAME}"
 git config user.email "${USER_EMAIL}"
 
 # run the script to produce a new page index in Home.md
-python /generate_wiki_page_index.py --insert "/checkoutdir/$(basename "${REPO_NAME}.wiki")"
+python /generate_wiki_page_index.py --insert "/checkoutdir/${REPO_WIKI}"
 
 # commit and push the change back to the repo
 git add Home.md
+git rm Home.md.old
 git commit -m "Auto-generate wiki page index."
 git push
 
