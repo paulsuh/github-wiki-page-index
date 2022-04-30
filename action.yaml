@@ -3,7 +3,7 @@ author: Paul Suh <paul@mspex.net>
 description: This action inserts an index of the wiki's pages into the Home page of a GitHub wiki.
 runs:
   using: 'docker'
-  image: 'GitHub_Action_Support/Dockerfile'
+  image: 'src/Dockerfile'
 
 inputs:
   REPO_NAME:
