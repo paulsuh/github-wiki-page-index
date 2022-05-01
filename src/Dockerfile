@@ -4,7 +4,7 @@ RUN apk add git
 
 RUN mkdir /checkoutdir
 
-COPY githubwikipageindex /
+COPY githubwikipageindex /githubwikipageindex
 COPY generate_wiki_page_index.py /
 COPY entrypoint.sh /entrypoint.sh
 
