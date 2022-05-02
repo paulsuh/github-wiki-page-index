@@ -10,6 +10,8 @@
 #
 # USER_EMAIL: Email address of the user. Utilized as part of the commit action
 
+env
+
 if [ -z "${REPO_NAME}" ]; then
   echo "REPO_NAME environment variable not set. Using the current repo GITHUB_REPOSITORY."
   REPO_NAME="${GITHUB_REPOSITORY}"
