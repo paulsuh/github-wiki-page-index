@@ -6,7 +6,7 @@
 #
 # AUTH_TOKEN: authentication token to allow content to be pushed
 #
-# USERNAME: Username for use with the AUTH_TOKEN
+# USER_NAME: Username for use with the AUTH_TOKEN
 #
 # USER_EMAIL: Email address of the user. Utilized as part of the commit action
 
@@ -20,6 +20,10 @@ cd /checkoutdir
 
 git clone "https://${AUTH_TOKEN}@github.com/${REPO_NAME}.wiki.git"
 
+echo "USER_NAME = ${USER_NAME}"
+echo "USER_EMAIL = ${USER_EMAIL}"
+echo "AUTH_TOKEN = ${AUTH_TOKEN}"
+
 REPO_WIKI=$(basename "${REPO_NAME}")".wiki"
 
 cd "${REPO_WIKI}"
@@ -32,7 +36,7 @@ python /generate_wiki_page_index.py --insert "/checkoutdir/${REPO_WIKI}"
 
 # commit and push the change back to the repo
 git add Home.md
-git rm Home.md.old
+rm Home.md.old
 git commit -m "Auto-generate wiki page index."
 git push
 
