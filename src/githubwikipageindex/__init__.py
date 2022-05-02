@@ -157,7 +157,7 @@ def _add_page_to_tag_dict(page: str, tag_seq: str, tag_dict: dict[str, any]) -> 
     """
     current_dict = tag_dict
     for current_level in tag_seq.split("-"):
-        current_dict = current_dict.setdefault(current_level, dict())
+        current_dict = current_dict.setdefault(current_level, {"untagged": set()})
     current_dict.setdefault("untagged", set()).add(page)
 
 
@@ -170,8 +170,6 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
     :return: tag tree rendered as Markdown
     """
     result = ""
-
-    print(tag_tree)
 
     for one_filename in sorted(list(tag_tree["untagged"])):
         # strip off the extension then change dashes to spaces
