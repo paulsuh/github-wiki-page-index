@@ -21,7 +21,7 @@ jobs:
       - name: build-index
         uses: ./
         id: indexer
-        with:
+        env:
           AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USER_EMAIL: ${{ secrets.YOUR_EMAIL }}
           USER_NAME: ${{ github.repository_owner }}
