@@ -171,6 +171,8 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
     """
     result = ""
 
+    print(tag_tree)
+
     for one_filename in sorted(list(tag_tree["untagged"])):
         # strip off the extension then change dashes to spaces
         # Prefix link with 'wiki/' so that it works right
