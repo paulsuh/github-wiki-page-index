@@ -16,12 +16,19 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Clone Repo
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Clone githubwikipageindex repo
         uses: actions/checkout@v3
-      - name: build-index
-        uses: ./
-        id: indexer
-        env:
-          AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          USER_EMAIL: ${{ secrets.YOUR_EMAIL }}
-          USER_NAME: ${{ github.repository_owner }}
+      - name: Show path
+        run: pwd
+      - name: List checkout files
+        run: ls -laR
+#      - name: Clone wiki
+#        uses:
+#      - name: build-index
+#        uses: ./
+#        id: indexer
+#        env:
+#          AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          USER_EMAIL: ${{ secrets.YOUR_EMAIL }}
+#          USER_NAME: ${{ github.repository_owner }}
