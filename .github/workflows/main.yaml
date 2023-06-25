@@ -16,32 +16,20 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Print Workspace
-        run: echo $GITHUB_WORKSPACE
-      - name: Print path
-        run: pwd
-      - name: List initial files
-        run: ls -la
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Clone githubwikipageindex repo
-        uses: actions/checkout@v3
-      - name: Show path
-        run: pwd
+      # Clone the wiki files
       - name: Clone wiki files
         uses: actions/checkout@v3
         with:
           repository: paulsuh/githubwikipageindex.wiki
           path: wiki
-      - name: Show path again
-        run: pwd
-      - name: list checkouts
+      # Retrieve the Python code
+      - name: Retrieve the code
+        run: /usr/bin/curl -O https://raw.githubusercontent.com/paulsuh/githubwikipageindex/main/generate_wiki_page_index.py
+      - name: Print Workspace
+        run: echo $GITHUB_WORKSPACE
+      - name: List initial files
         run: ls -la
-      - name: check for curl
-        run: which curl
-      - name: check for wget
-        run: which wget
-    #       - name: Clone wiki
-#        uses:
+
 #      - name: build-index
 #        uses: ./
 #        id: indexer
