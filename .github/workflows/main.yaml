@@ -25,6 +25,8 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: paulsuh/githubwikipageindex.wiki
+      - name: Show path again
+        run: pwd
       - name: list checkouts
         run: ls -la
     #       - name: Clone wiki
