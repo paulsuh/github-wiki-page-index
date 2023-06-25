@@ -10,7 +10,7 @@ on:
 
 jobs:
 
-  wiki-page-index:
+  generate-wiki-page-index:
   
     runs-on: ubuntu-latest
 
@@ -24,11 +24,17 @@ jobs:
           path: wiki
       # Retrieve the Python code
       - name: Retrieve the code
-        run: /usr/bin/curl -O https://raw.githubusercontent.com/paulsuh/githubwikipageindex/main/generate_wiki_page_index.py
-      - name: Print Workspace
-        run: echo $GITHUB_WORKSPACE
-      - name: List initial files
-        run: ls -la
+        run: >
+          /usr/bin/curl 
+          --remote-name
+          --silent
+          --show-error 
+          https://raw.githubusercontent.com/paulsuh/githubwikipageindex/main/generate_wiki_page_index.py
+      - name: List initial files and try to execute
+        run: | 
+          ls -la
+          ls -la wiki
+          python3 generate_wiki_page_index.py
 
 #      - name: build-index
 #        uses: ./
