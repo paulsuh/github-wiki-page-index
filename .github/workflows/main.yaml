@@ -34,6 +34,13 @@ jobs:
       - name: Run the indexer
         run: |
           /usr/bin/python3 generate_wiki_page_index.py --insert wiki
-      - name: Check the result
-        run: cat wiki/Home.md
+#      - name: Check the result
+#        run: cat wiki/Home.md
+      # commit the changes
+      - name: Commit indexer output
+        run: |
+          /usr/bin/git commit -m 'Automatic Github wiki tag indexer run' wiki
       # Push the wiki back to Github
+      - name: Push wiki files back up to Github
+        run: >
+          /usr/bin/git push wiki
