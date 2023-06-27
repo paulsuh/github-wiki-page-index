@@ -38,8 +38,11 @@ jobs:
 #        run: cat wiki/Home.md
       # commit the changes
       - name: Commit indexer output
-        run: |
-          /usr/bin/git commit -m 'Automatic Github wiki tag indexer run' wiki
+        run: >
+          /usr/bin/git 
+          -C wiki
+          commit 
+          -m 'Automatic Github wiki tag indexer run'
       # Push the wiki back to Github
       - name: Push wiki files back up to Github
         run: >
