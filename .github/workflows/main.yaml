@@ -32,13 +32,8 @@ jobs:
           https://raw.githubusercontent.com/paulsuh/githubwikipageindex/main/generate_wiki_page_index.py
       # Run the indexer
       - name: Run the indexer
-        run: >
-          /usr/bin/python3 generate_wiki_page_index.py wiki
-
-#      - name: build-index
-#        uses: ./
-#        id: indexer
-#        env:
-#          AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          USER_EMAIL: ${{ secrets.YOUR_EMAIL }}
-#          USER_NAME: ${{ github.repository_owner }}
+        run: |
+          /usr/bin/python3 generate_wiki_page_index.py --insert wiki
+      - name: Check the result
+        run: cat wiki/Home.md
+      # Push the wiki back to Github
