@@ -43,11 +43,9 @@ jobs:
           /usr/bin/git -C wiki config user.name 'Github Wiki Page Tag Indexer'
       # commit the changes
       - name: Commit indexer output
-        run: >
-          /usr/bin/git 
-          -C wiki
-          commit 
-          -m 'Automatic Github wiki tag indexer run'
+        run: |
+          /usr/bin/git -C wiki add Home.md
+          /usr/bin/git -C wiki commit -m 'Automatic Github wiki tag indexer run'
       # Push the wiki back to Github
       - name: Push wiki files back up to Github
         run: >
