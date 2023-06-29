@@ -36,17 +36,11 @@ jobs:
           /usr/bin/python3 generate_wiki_page_index.py --insert wiki
 #      - name: Check the result
 #        run: cat wiki/Home.md
-      # set up the repo with identification
-      - name: Repo setup
+      # set up the repo, commit, and push
+      - name: Repo setup commit and push
         run: |
           /usr/bin/git -C wiki config user.email 'githubwikipagetagindex@mspex.net'
           /usr/bin/git -C wiki config user.name 'Github Wiki Page Tag Indexer'
-      # commit the changes
-      - name: Commit indexer output
-        run: |
           /usr/bin/git -C wiki add Home.md
-          /usr/bin/git -C wiki commit -m 'Automatic Github wiki tag indexer run'
-      # Push the wiki back to Github
-      - name: Push wiki files back up to Github
-        run: >
-          /usr/bin/git push wiki
+          /usr/bin/git -C wiki commit
+          /usr/bin/git -C wiki push
