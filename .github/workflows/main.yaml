@@ -42,5 +42,5 @@ jobs:
           /usr/bin/git -C wiki config user.email 'githubwikipagetagindex@mspex.net'
           /usr/bin/git -C wiki config user.name 'Github Wiki Page Tag Indexer'
           /usr/bin/git -C wiki add Home.md
-          /usr/bin/git -C wiki commit
+          /usr/bin/git -C wiki commit -m "Wiki page tag automation" 
           /usr/bin/git -C wiki push
