@@ -102,15 +102,20 @@ def generate_page_index() -> str:
         for one_line in f:
             fn = fileinput.filename()
 
-            # assume the page is untagged
-            tag_tree["untagged"].add(fn)
             if len(tags_list := _scan_line_for_tags(one_line)) > 0:
-                # tag found, remove the page from the list of completely untagged files
-                # and add it to one of the tag entries
-                tag_tree["untagged"].discard(fn)
-                for one_tag in tags_list:
-                    _add_page_to_tag_dict(fn, one_tag, tag_tree)
-                fileinput.nextfile()
+
+                # if one of the tags is "noindex", then skip the page
+                # this is useful for archiving or otherwise ignoring
+                # pages.
+                if "noindex" not in tags_list:
+                    # otherwise, add the page to the tags dict
+                    for one_tag in tags_list:
+                        _add_page_to_tag_dict(fn, one_tag, tag_tree)
+            else:
+                # the page is untagged
+                tag_tree["untagged"].add(fn)
+
+            fileinput.nextfile()
 
     result += _render_tag_tree(tag_tree) + end_marker
 
@@ -126,6 +131,7 @@ def _scan_line_for_tags(line_to_scan: str) -> list[str]:
     :return: list of tags in that line
     """
     if line_to_scan.startswith("Tags: "):
+
         # return a list of tags, without the initial Tags: indicator
         return line_to_scan.split()[1:]
 
@@ -170,21 +176,37 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
     :param level: how many #'s to put in front of tag headings
     :return: tag tree rendered as Markdown
     """
+
+    def _insert_untagged():
+
+        nonlocal result
+        nonlocal level
+
+        if untagged_after and level == 2:
+            result += "## Untagged Pages\n\n"
+
+        for one_filename in sorted(list(tag_tree["untagged"])):
+
+            # strip off the extension then change dashes to spaces
+            # Prefix link with 'wiki/' so that it works right
+            # This is a GitHub bug
+            stripped_filename = splitext(one_filename)[0]
+            munged_filename = stripped_filename.translate(dash_to_space)
+            result += f"[{munged_filename}](wiki/{stripped_filename})\n\n"
+
     result = ""
 
-    for one_filename in sorted(list(tag_tree["untagged"])):
-        # strip off the extension then change dashes to spaces
-        # Prefix link with 'wiki/' so that it works right
-        # This is a GitHub bug
-        stripped_filename = splitext(one_filename)[0]
-        munged_filename = stripped_filename.translate(dash_to_space)
-        result += f"[{munged_filename}](wiki/{stripped_filename})\n\n"
+    if not untagged_after:
+        _insert_untagged()
 
     sub_tags = sorted(tag_tree.keys())
     sub_tags.remove("untagged")
     for one_tag in sub_tags:
         result += f"{'#' * level} {one_tag.translate(underscore_to_space)}\n\n"
         result += _render_tag_tree(tag_tree[one_tag], level + 1)
+
+    if untagged_after:
+        _insert_untagged()
 
     return result
 
@@ -196,7 +218,12 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--insert",
                         help="Automatically insert the Page Index into your Home.md file",
                         action="store_true")
+    parser.add_argument("-u", "--untagged-after",
+                        help="Place untagged pages at the end of the index (default is at the start)",
+                        action="store_true")
     args = parser.parse_args()
+
+    untagged_after = args.untagged_after
 
     chdir(args.wiki_dir)
 
