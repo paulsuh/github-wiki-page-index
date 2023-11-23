@@ -24,8 +24,8 @@ end_marker = "<!--end Page Index-->\n"
 
 
 def insert_page_index() -> None:
-    """
-    Generate the Page Index and place the text into the Home.md file.
+    """Generate the Page Index and place the text into the Home.md file.
+
     If the HTML comments <!--start Page Index--> and <!--end Page Index-->
     exist then the Page Index will be inserted between them. Otherwise, the
     Page Index will be placed at the start of the file and the comments will
@@ -77,8 +77,7 @@ def insert_page_index() -> None:
 
 
 def generate_page_index() -> str:
-    """
-    Scan the wiki pages and produce a Page Index.
+    """Scan the wiki pages and produce a Page Index.
 
     :return: Markdown-formatted Page Index
     """
@@ -123,8 +122,9 @@ def generate_page_index() -> str:
 
 
 def _scan_line_for_tags(line_to_scan: str) -> list[str]:
-    """
-    Scan a single line for tags. This is a line that looks like:
+    """Scan a single line for tags.
+
+    This is a line that looks like:
     Tags: Tag_One Tag_Two Tag_Three-Sub_Tag_A
 
     :param line_to_scan: line to be scanned
@@ -140,8 +140,9 @@ def _scan_line_for_tags(line_to_scan: str) -> list[str]:
 
 
 def _add_page_to_tag_dict(page: str, tag_seq: str, tag_dict: dict[str, any]) -> None:
-    """
-    Add the filename to the tag dict. The dict structure looks like:
+    """Add the filename to the tag dict.
+
+    The dict structure looks like:
     {
         "untagged": {"page1", "page2", "page3"}
         "tag1": {
@@ -169,8 +170,7 @@ def _add_page_to_tag_dict(page: str, tag_seq: str, tag_dict: dict[str, any]) -> 
 
 
 def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
-    """
-    Render the tag tree into a string with links to the pages.
+    """Render the tag tree into a string with links to the pages.
 
     :param tag_tree: dict containing the tags
     :param level: how many #'s to put in front of tag headings
