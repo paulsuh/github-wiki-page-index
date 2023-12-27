@@ -3,5 +3,35 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
+name = "githubwikipageindex"
+version = "0.1.0"
+description = 'Creates an index based on tags for GitHub Wiki pages.'
+readme = 'README.md'
+license = "BSD 3-clause"
+authors = [
+    { name = "Paul Suh", email = "paul@mspex.net" }
+]
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Documentation",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Wiki"
+]
+dependencies = []
+requires-python = ">=3.8"
+
+[project.optional-dependencies]
+precommit = [
+    "ruff"
+]
+unittest = [
+    "pytest",
+    "pytest-cov"
+]
+
+[project.urls]
+"Source code" = "https://github.com/paulsuh/githubwikipageindex"
 
 [tool]
