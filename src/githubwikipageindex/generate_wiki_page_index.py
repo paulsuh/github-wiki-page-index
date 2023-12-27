@@ -36,7 +36,6 @@ def insert_page_index() -> None:
     rename("Home.md", "Home.md.old")
     with open("Home.md", "w") as new_home_md:
         with open("Home.md.old", "r") as old_home_md:
-
             # Read and dump out text before the Page Index
             while one_line := old_home_md.readline():
                 if one_line == start_marker:
@@ -82,9 +81,7 @@ def generate_page_index() -> str:
     :return: Markdown-formatted Page Index
     """
     result: str = f"{start_marker}\n# Page Index\n\n"
-    tag_tree: dict = {
-        "untagged": set()
-    }
+    tag_tree: dict = {"untagged": set()}
 
     # get the list of files
     files_in_dir = scandir()
@@ -96,13 +93,11 @@ def generate_page_index() -> str:
 
     # openhook is to handle files with screwed up Unicode encoding, otherwise fileinput
     # crashes
-    with fileinput.input(files_to_scan,
-                         openhook=lambda filename, mode: open(filename, mode, errors="replace")) as f:
+    with fileinput.input(files_to_scan, errors="replace") as f:
         for one_line in f:
             fn = fileinput.filename()
 
             if len(tags_list := _scan_line_for_tags(one_line)) > 0:
-
                 # if one of the tags is "noindex", then skip the page
                 # this is useful for archiving or otherwise ignoring
                 # pages.
@@ -131,7 +126,6 @@ def _scan_line_for_tags(line_to_scan: str) -> list[str]:
     :return: list of tags in that line
     """
     if line_to_scan.startswith("Tags: "):
-
         # return a list of tags, without the initial Tags: indicator
         return line_to_scan.split()[1:]
 
@@ -178,7 +172,6 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
     """
 
     def _insert_untagged():
-
         nonlocal result
         nonlocal level
 
@@ -186,7 +179,6 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
             result += "## Untagged Pages\n\n"
 
         for one_filename in sorted(list(tag_tree["untagged"])):
-
             # strip off the extension then change dashes to spaces
             # Prefix link with 'wiki/' so that it works right
             # This is a GitHub bug
@@ -212,15 +204,20 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
 
 
 if __name__ == "__main__":
-
     parser = ArgumentParser(description="Generate a Page Index for a GitHub Wiki. ")
     parser.add_argument("wiki_dir", help="Path to the clone of your GitHub Wiki")
-    parser.add_argument("-i", "--insert",
-                        help="Automatically insert the Page Index into your Home.md file",
-                        action="store_true")
-    parser.add_argument("-u", "--untagged-after",
-                        help="Place untagged pages at the end of the index (default is at the start)",
-                        action="store_true")
+    parser.add_argument(
+        "-i",
+        "--insert",
+        help="Automatically insert the Page Index into your Home.md file",
+        action="store_true",
+    )
+    parser.add_argument(
+        "-u",
+        "--untagged-after",
+        help="Place untagged pages at the end of the index (default is at the start)",
+        action="store_true",
+    )
     args = parser.parse_args()
 
     untagged_after = args.untagged_after
