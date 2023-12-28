@@ -7,7 +7,6 @@ name = "githubwikipageindex"
 version = "0.1.0"
 description = 'Creates an index based on tags for GitHub Wiki pages.'
 readme = 'README.md'
-license = "BSD 3-clause"
 authors = [
     { name = "Paul Suh", email = "paul@mspex.net" }
 ]
@@ -34,4 +33,48 @@ unittest = [
 [project.urls]
 "Source code" = "https://github.com/paulsuh/githubwikipageindex"
 
-[tool]
+[tool.hatch.envs.default]
+type="conda"
+dependencies = [
+    "coverage[toml]>=6.5",
+    "pytest",
+]
+python="3.11"
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+cov-report = [
+  "- coverage combine",
+  "coverage report",
+]
+cov = [
+  "test-cov",
+  "cov-report",
+]
+
+[tool.hatch.envs.types]
+dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/foobar tests}"
+
+[tool.coverage.run]
+source_pkgs = ["foobar", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/foobar/__about__.py",
+]
+
+[tool.coverage.paths]
+foobar = ["src/foobar", "*/foobar/src/foobar"]
+tests = ["tests", "*/foobar/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
