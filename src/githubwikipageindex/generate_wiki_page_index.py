@@ -1,6 +1,6 @@
 import fileinput
 import re
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 from os import chdir
 from os import rename, scandir
 from os.path import splitext
@@ -9,18 +9,52 @@ from os.path import splitext
 Generates page index for a wiki
 """
 
-# excludes files and folders that start with a dot, like .git or .DS_Store
-# also excludes _Sidebar.md, _Footer.md, and Home.md
-file_exclusion_re: re.Pattern = re.compile(
-    r"^\..*$|^_Sidebar\.md$|^_Footer.md$|Home.md"
-)
 
-# translation tables for str.translate
-dash_to_space = str.maketrans("-", " ")
-underscore_to_space = str.maketrans("_", " ")
+file_exclusion_re: re.Pattern
+dash_to_space: dict
+underscore_to_space: dict
+start_marker: str
+end_marker: str
 
-start_marker = "<!--start Page Index-->\n"
-end_marker = "<!--end Page Index-->\n"
+
+def _setup():
+    global file_exclusion_re
+    global dash_to_space
+    global underscore_to_space
+    global start_marker
+    global end_marker
+
+    # excludes files and folders that start with a dot, like .git or .DS_Store
+    # also excludes _Sidebar.md, _Footer.md, and Home.md
+    file_exclusion_re: re.Pattern = re.compile(
+        r"^\..*$|^_Sidebar\.md$|^_Footer.md$|Home.md"
+    )
+
+    # translation tables for str.translate
+    dash_to_space = str.maketrans("-", " ")
+    underscore_to_space = str.maketrans("_", " ")
+
+    start_marker = "<!--start Page Index-->\n"
+    end_marker = "<!--end Page Index-->\n"
+
+
+def _parse_args() -> Namespace:
+    parser = ArgumentParser(description="Generate a Page Index for a GitHub Wiki. ")
+    parser.add_argument("wiki_dir", help="Path to the clone of your GitHub Wiki")
+    parser.add_argument(
+        "-i",
+        "--insert",
+        help="Automatically insert the Page Index into your Home.md file",
+        action="store_true",
+    )
+    parser.add_argument(
+        "-u",
+        "--untagged-after",
+        help="Place untagged pages at the end of the index (default is at the start)",
+        action="store_true",
+    )
+    result = parser.parse_args()
+    return result
 
 
 def insert_page_index() -> None:
@@ -91,8 +125,8 @@ def generate_page_index() -> str:
         if f.is_file() and not file_exclusion_re.match(f.name)
     ]
 
-    # openhook is to handle files with screwed up Unicode encoding, otherwise fileinput
-    # crashes
+    # errors="replace" is to handle files with screwed up Unicode encoding, otherwise
+    # fileinput crashes
     with fileinput.input(files_to_scan, errors="replace") as f:
         for one_line in f:
             fn = fileinput.filename()
@@ -204,22 +238,7 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Generate a Page Index for a GitHub Wiki. ")
-    parser.add_argument("wiki_dir", help="Path to the clone of your GitHub Wiki")
-    parser.add_argument(
-        "-i",
-        "--insert",
-        help="Automatically insert the Page Index into your Home.md file",
-        action="store_true",
-    )
-    parser.add_argument(
-        "-u",
-        "--untagged-after",
-        help="Place untagged pages at the end of the index (default is at the start)",
-        action="store_true",
-    )
-    args = parser.parse_args()
-
+    args = _parse_args()
     untagged_after = args.untagged_after
 
     chdir(args.wiki_dir)
