@@ -26,9 +26,7 @@ def _setup():
 
     # excludes files and folders that start with a dot, like .git or .DS_Store
     # also excludes _Sidebar.md, _Footer.md, and Home.md
-    file_exclusion_re: re.Pattern = re.compile(
-        r"^\..*$|^_Sidebar\.md$|^_Footer.md$|Home.md"
-    )
+    file_exclusion_re = re.compile(r"^\..*$|^_Sidebar\.md$|^_Footer.md$|Home.md")
 
     # translation tables for str.translate
     dash_to_space = str.maketrans("-", " ")
@@ -178,7 +176,7 @@ def _add_page_to_tag_dict(page: str, tag_seq: str, tag_dict: dict[str, any]) -> 
         }
         "tag2": {
             "untagged": {}
-            "sub-tag3": {
+            "tag3": {
                 "untagged": {"page5", "page6"}
             }
         }
