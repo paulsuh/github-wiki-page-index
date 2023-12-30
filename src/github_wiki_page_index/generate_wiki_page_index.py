@@ -1,5 +1,6 @@
 import fileinput
 import re
+import sys
 from argparse import ArgumentParser, Namespace
 from os import chdir
 from os import rename, scandir
@@ -36,7 +37,7 @@ def _setup():
     end_marker = "<!--end Page Index-->\n"
 
 
-def _parse_args() -> Namespace:
+def _parse_args(args: list[str]) -> Namespace:
     parser = ArgumentParser(description="Generate a Page Index for a GitHub Wiki. ")
     parser.add_argument("wiki_dir", help="Path to the clone of your GitHub Wiki")
     parser.add_argument(
@@ -51,7 +52,7 @@ def _parse_args() -> Namespace:
         help="Place untagged pages at the end of the index (default is at the start)",
         action="store_true",
     )
-    result = parser.parse_args()
+    result = parser.parse_args(args=args)
     return result
 
 
@@ -236,7 +237,7 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
 
 
 if __name__ == "__main__":
-    args = _parse_args()
+    args = _parse_args(sys.argv)
     untagged_after = args.untagged_after
 
     chdir(args.wiki_dir)
