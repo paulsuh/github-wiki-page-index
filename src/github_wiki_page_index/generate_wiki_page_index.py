@@ -108,15 +108,7 @@ def insert_page_index() -> None:
                 new_home_md.write(one_line)
 
 
-def generate_page_index() -> str:
-    """Scan the wiki pages and produce a Page Index.
-
-    :return: Markdown-formatted Page Index
-    """
-    result: str = f"{start_marker}\n# Page Index\n\n"
-    tag_tree: dict = {"untagged": set()}
-
-    # get the list of files
+def _get_file_tags() -> tuple[str, list[str]]:
     files_in_dir = scandir()
     files_to_scan = [
         f.name
@@ -129,20 +121,31 @@ def generate_page_index() -> str:
     with fileinput.input(files_to_scan, errors="replace") as f:
         for one_line in f:
             fn = fileinput.filename()
-
-            if len(tags_list := _scan_line_for_tags(one_line)) > 0:
-                # if one of the tags is "noindex", then skip the page
-                # this is useful for archiving or otherwise ignoring
-                # pages.
-                if "noindex" not in tags_list:
-                    # otherwise, add the page to the tags dict
-                    for one_tag in tags_list:
-                        _add_page_to_tag_dict(fn, one_tag, tag_tree)
-            else:
-                # the page is untagged
-                tag_tree["untagged"].add(fn)
-
+            tags_list = _scan_line_for_tags(one_line)
+            yield fn, tags_list
             fileinput.nextfile()
+
+
+def generate_page_index() -> str:
+    """Scan the wiki pages and produce a Page Index.
+
+    :return: Markdown-formatted Page Index
+    """
+    result: str = f"{start_marker}\n# Page Index\n\n"
+    tag_tree: dict = {"untagged": set()}
+
+    for filename, tags_list in _get_file_tags():
+        if len(tags_list) > 0:
+            # if one of the tags is "noindex", then skip the page
+            # this is useful for archiving or otherwise ignoring
+            # pages.
+            if "noindex" not in tags_list:
+                # otherwise, add the page to the tags dict
+                for one_tag in tags_list:
+                    _add_page_to_tag_dict(filename, one_tag, tag_tree)
+        else:
+            # the page is untagged
+            tag_tree["untagged"].add(filename)
 
     result += _render_tag_tree(tag_tree) + end_marker
 
@@ -237,7 +240,8 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
 
 
 if __name__ == "__main__":
-    args = _parse_args(sys.argv)
+    _setup()
+    args = _parse_args(sys.argv[1:])
     untagged_after = args.untagged_after
 
     chdir(args.wiki_dir)
