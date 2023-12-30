@@ -87,9 +87,10 @@ tests = ["tests", "*/foobar/tests"]
 
 [tool.coverage.report]
 exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "def _setup():"
 ]
 
 [tool.ruff.per-file-ignores]
