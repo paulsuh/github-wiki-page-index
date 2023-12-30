@@ -74,16 +74,15 @@ dependencies = [
 check = "mypy --install-types --non-interactive {args:src/foobar tests}"
 
 [tool.coverage.run]
-source_pkgs = ["foobar", "tests"]
+source_pkgs = ["src"]
 branch = true
 parallel = true
 omit = [
-  "src/foobar/__about__.py",
+  "src/github_wiki_page_index/__about__.py",
 ]
 
 [tool.coverage.paths]
-foobar = ["src/foobar", "*/foobar/src/foobar"]
-tests = ["tests", "*/foobar/tests"]
+src = ["src"]
 
 [tool.coverage.report]
 exclude_lines = [
