@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "githubwikipageindex"
+name = "github-wiki-page-index"
 version = "0.1.0"
 description = 'Creates an index based on tags for GitHub Wiki pages.'
 readme = 'README.md'
@@ -32,6 +32,18 @@ unittest = [
 
 [project.urls]
 "Source code" = "https://github.com/paulsuh/githubwikipageindex"
+
+[tool.hatch.version]
+path = "src/foobar/__about__.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/docs",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/github_wiki_page_index"]
 
 [tool.hatch.envs.default]
 type="conda"

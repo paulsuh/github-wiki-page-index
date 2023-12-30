@@ -20,7 +20,7 @@ jobs:
       - name: Clone wiki files
         uses: actions/checkout@v3
         with:
-          repository: paulsuh/githubwikipageindex.wiki
+          repository: paulsuh/github_wiki_page_index.wiki
           path: wiki
       # Retrieve the Python code
       - name: Retrieve the code

@@ -1,4 +1,4 @@
-from src.githubwikipageindex.generate_wiki_page_index import _add_page_to_tag_dict
+from src.github_wiki_page_index.generate_wiki_page_index import _add_page_to_tag_dict
 
 
 def test_add_page_to_tag_dict():
