@@ -219,3 +219,59 @@ rates from hundreds to thousands of revolutions per minute. This forces the cutt
 off chips (swarf) from the hole as it is drilled.
 """
     )
+
+
+def test_insert_page_index_2(monkeypatch, example_page_index):
+    def return_dummy_index():
+        return example_page_index
+
+    monkeypatch.setattr(
+        generate_wiki_page_index, "generate_page_index", return_dummy_index
+    )
+
+    input_io = StringIO(
+        """Welcome to the wikitest wiki!
+
+Barrau was born in Carcassonne. He was a student of Alexandre Falguière and 
+started at the Salon in 1874. He received awards in 1879, 1880, 1889, and 
+became a Chevalier of the Legion of Honor in 1892. He died in Paris.
+
+Drilling is a cutting process that uses a drill bit to cut a hole of circular cross-section in solid materials. The
+drill bit is usually a rotary cutting tool, often multi-point. The bit is pressed against the work-piece and rotated at
+rates from hundreds to thousands of revolutions per minute. This forces the cutting edge against the work-piece, cutting
+off chips (swarf) from the hole as it is drilled.
+"""
+    )
+
+    output_io = StringIO()
+
+    _insert_page_index(input_io, output_io)
+    assert (
+        output_io.getvalue()
+        == """<!--start Page Index-->
+
+# Page Index
+
+[file1](wiki/file1)
+
+## tag
+
+[file3](wiki/file3)
+
+### subtag
+
+[file2](wiki/file2)
+
+<!--end Page Index-->
+Welcome to the wikitest wiki!
+
+Barrau was born in Carcassonne. He was a student of Alexandre Falguière and 
+started at the Salon in 1874. He received awards in 1879, 1880, 1889, and 
+became a Chevalier of the Legion of Honor in 1892. He died in Paris.
+
+Drilling is a cutting process that uses a drill bit to cut a hole of circular cross-section in solid materials. The
+drill bit is usually a rotary cutting tool, often multi-point. The bit is pressed against the work-piece and rotated at
+rates from hundreds to thousands of revolutions per minute. This forces the cutting edge against the work-piece, cutting
+off chips (swarf) from the hole as it is drilled.
+"""
+    )
