@@ -117,6 +117,11 @@ def test_scan_line_for_tags():
     assert tags_list == ["foo", "foo-bar", "blah", "baz"]
 
 
+def test_scan_line_for_tags_2():
+    tags_list = _scan_line_for_tags("foo foo-bar blah baz")
+    assert tags_list == []
+
+
 def test_render_tag_tree(example_tag_dict, run_setup):
     rendered_tree = _render_tag_tree(example_tag_dict)
 
