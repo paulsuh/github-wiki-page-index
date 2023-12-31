@@ -5,7 +5,7 @@ from argparse import ArgumentParser, Namespace
 from os import chdir
 from os import rename, scandir
 from os.path import splitext
-from io import TextIOWrapper
+from typing import TextIO
 
 """
 Generates page index for a wiki
@@ -17,6 +17,7 @@ dash_to_space: dict
 underscore_to_space: dict
 start_marker: str
 end_marker: str
+untagged_after: bool
 
 
 def _setup():
@@ -39,6 +40,8 @@ def _setup():
 
 
 def _parse_args(args: list[str]) -> Namespace:
+    global untagged_after
+
     parser = ArgumentParser(description="Generate a Page Index for a GitHub Wiki. ")
     parser.add_argument("wiki_dir", help="Path to the clone of your GitHub Wiki")
     parser.add_argument(
@@ -54,6 +57,8 @@ def _parse_args(args: list[str]) -> Namespace:
         action="store_true",
     )
     result = parser.parse_args(args=args)
+    untagged_after = result.untagged_after
+
     return result
 
 
@@ -72,7 +77,7 @@ def insert_page_index():
             _insert_page_index(old_home_md, new_home_md)
 
 
-def _insert_page_index(old_home_md: TextIOWrapper, new_home_md: TextIOWrapper) -> None:
+def _insert_page_index(old_home_md: TextIO, new_home_md: TextIO) -> None:
     # Read and dump out text before the Page Index
     while one_line := old_home_md.readline():
         if one_line == start_marker:
@@ -215,9 +220,6 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
         nonlocal result
         nonlocal level
 
-        if untagged_after and level == 2:
-            result += "## Untagged Pages\n\n"
-
         for one_filename in sorted(list(tag_tree["untagged"])):
             # strip off the extension then change dashes to spaces
             # Prefix link with 'wiki/' so that it works right
@@ -228,7 +230,7 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
 
     result = ""
 
-    if not untagged_after:
+    if not untagged_after or level != 2:
         _insert_untagged()
 
     sub_tags = sorted(tag_tree.keys())
@@ -237,7 +239,8 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
         result += f"{'#' * level} {one_tag.translate(underscore_to_space)}\n\n"
         result += _render_tag_tree(tag_tree[one_tag], level + 1)
 
-    if untagged_after:
+    if untagged_after and level == 2:
+        result += "## Untagged Pages\n\n"
         _insert_untagged()
 
     return result
@@ -246,8 +249,6 @@ def _render_tag_tree(tag_tree: dict, level: int = 2) -> str:
 if __name__ == "__main__":
     _setup()
     args = _parse_args(sys.argv[1:])
-    untagged_after = args.untagged_after
-
     chdir(args.wiki_dir)
 
     if args.insert:
