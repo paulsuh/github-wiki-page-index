@@ -5,6 +5,7 @@ from argparse import ArgumentParser, Namespace
 from os import chdir
 from os import rename, scandir
 from os.path import splitext
+from io import TextIOWrapper
 
 """
 Generates page index for a wiki
@@ -56,7 +57,7 @@ def _parse_args(args: list[str]) -> Namespace:
     return result
 
 
-def insert_page_index() -> None:
+def insert_page_index():
     """Generate the Page Index and place the text into the Home.md file.
 
     If the HTML comments <!--start Page Index--> and <!--end Page Index-->
@@ -65,47 +66,50 @@ def insert_page_index() -> None:
     be added. Text above the start marker and text below the end marker will
     be preserved.
     """
-
     rename("Home.md", "Home.md.old")
     with open("Home.md", "w") as new_home_md:
         with open("Home.md.old", "r") as old_home_md:
-            # Read and dump out text before the Page Index
-            while one_line := old_home_md.readline():
-                if one_line == start_marker:
-                    # We reached the top of the old Page Index
-                    break
-                else:
-                    # We haven't reached the top of the old Page Index yet so
-                    # transfer the old content to the new file.
-                    new_home_md.write(one_line)
+            _insert_page_index(old_home_md, new_home_md)
 
-            if len(one_line) == 0:
-                # reached EOF without finding an existing Page Index
-                # Put the Page Index at the beginning of the file, then
-                # rewind and put the rest of the old home page's content
-                # after that.
-                # This is slightly inefficient, but good enough for this purpose
-                new_home_md.seek(0)
-                new_home_md.write(generate_page_index())
-                old_home_md.seek(0)
-                for existing_line in old_home_md:
-                    new_home_md.write(existing_line)
-                return
 
-            # We found the old Page Index, so skip lines until the end of the old Page Index
-            while one_line := old_home_md.readline():
-                if one_line == end_marker:
-                    break
+def _insert_page_index(old_home_md: TextIOWrapper, new_home_md: TextIOWrapper) -> None:
+    # Read and dump out text before the Page Index
+    while one_line := old_home_md.readline():
+        if one_line == start_marker:
+            # We reached the top of the old Page Index
+            break
+        else:
+            # We haven't reached the top of the old Page Index yet so
+            # transfer the old content to the new file.
+            new_home_md.write(one_line)
 
-            # Either we found the old Page Index and skipped to the bottom of it,
-            # or we never found the bottom marker and skipped all of the rest
-            # of the file.
-            # In either case write the new Page Index
-            new_home_md.write(generate_page_index())
+    if len(one_line) == 0:
+        # reached EOF without finding an existing Page Index
+        # Put the Page Index at the beginning of the file, then
+        # rewind and put the rest of the old home page's content
+        # after that.
+        # This is slightly inefficient, but good enough for this purpose
+        new_home_md.seek(0)
+        new_home_md.write(generate_page_index())
+        old_home_md.seek(0)
+        for existing_line in old_home_md:
+            new_home_md.write(existing_line)
+        return
 
-            # Read and dump out text after the Page Index
-            while one_line := old_home_md.readline():
-                new_home_md.write(one_line)
+    # We found the old Page Index, so skip lines until the end of the old Page Index
+    while one_line := old_home_md.readline():
+        if one_line == end_marker:
+            break
+
+    # Either we found the old Page Index and skipped to the bottom of it,
+    # or we never found the bottom marker and skipped all of the rest
+    # of the file.
+    # In either case write the new Page Index
+    new_home_md.write(generate_page_index())
+
+    # Read and dump out text after the Page Index
+    while one_line := old_home_md.readline():
+        new_home_md.write(one_line)
 
 
 def _get_file_tags() -> tuple[str, list[str]]:
