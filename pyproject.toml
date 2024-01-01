@@ -27,52 +27,13 @@ precommit = [
     "ruff"
 ]
 unittest = [
+    "coverage[toml]>=6.5",
     "pytest",
     "pytest-cov"
 ]
 
 [project.urls]
 "Source code" = "https://github.com/paulsuh/githubwikipageindex"
-
-#[tool.hatch.version]
-#path = "src/foobar/__about__.py"
-#
-#[tool.hatch.build.targets.sdist]
-#exclude = [
-#  "/.github",
-#  "/docs",
-#]
-#
-#[tool.hatch.build.targets.wheel]
-#packages = ["src/github_wiki_page_index"]
-#
-#[tool.hatch.envs.default]
-#type="conda"
-#dependencies = [
-#    "coverage[toml]>=6.5",
-#    "pytest",
-#    "ruff"
-#]
-#python="3.11"
-#
-#[tool.hatch.envs.default.scripts]
-#test = "pytest {args:tests}"
-#test-cov = "coverage run -m pytest {args:tests}"
-#cov-report = [
-#  "- coverage combine",
-#  "coverage report",
-#]
-#cov = [
-#  "test-cov",
-#  "cov-report",
-#]
-#
-#[tool.hatch.envs.types]
-#dependencies = [
-#  "mypy>=1.0.0",
-#]
-#[tool.hatch.envs.types.scripts]
-#check = "mypy --install-types --non-interactive {args:src/foobar tests}"
 
 [tool.coverage.run]
 source_pkgs = ["src"]
