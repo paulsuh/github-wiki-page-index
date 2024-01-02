@@ -3,11 +3,7 @@
 This package will generate a page index for your GitHub Wiki, and
 optionally insert it into the Home.md file. It can also be set up as 
 a GitHub Action to auto-update the Home.md file when the wiki is 
-edited. 
-
-* Version: 0.2.1
-* License: BSD 3-clause
-* Python 3.8+
+edited.
 
 ## Usage
 

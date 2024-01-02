@@ -39,7 +39,7 @@ def _setup():
     end_marker = "<!--end Page Index-->\n"
 
 
-def _parse_args(args: list[str]) -> Namespace:
+def _parse_args(args_list: list[str]) -> Namespace:
     global untagged_after
 
     parser = ArgumentParser(description="Generate a Page Index for a GitHub Wiki. ")
@@ -56,7 +56,7 @@ def _parse_args(args: list[str]) -> Namespace:
         help="Place untagged pages at the end of the index (default is at the start)",
         action="store_true",
     )
-    result = parser.parse_args(args=args)
+    result = parser.parse_args(args=args_list)
     untagged_after = result.untagged_after
 
     return result
