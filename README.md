@@ -60,6 +60,12 @@ that are tagged with hierarchical tags.
 
 ## Automated Deployment
 
+TBA
+
+<!--
+    COMMENTED OUT FOR NOW AS NOT READY YET BUT DON'T WANT TO LOSE
+    THE INFO
+
 There are two suggested ways to deploy githubwikipageindex: 
 
 1. GitHub Action
@@ -84,3 +90,4 @@ The Docker image will automatically clone the wiki, insert the page
 index, commit, and push the wiki back up to GitHub. This is intended 
 to be used as a GitHub Action, but it is not quite ready for that yet. 
 
+-->
