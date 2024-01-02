@@ -247,3 +247,6 @@ $RECYCLE.BIN/
 scratch_files
 
 env.txt
+
+# hatch-scm version tracking file
+_version.py
