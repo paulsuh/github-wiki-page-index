@@ -1,10 +1,9 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "github-wiki-page-index"
-version = "0.1.0"
 description = 'Creates an index based on tags for GitHub Wiki pages.'
 readme = 'README.md'
 authors = [
@@ -20,6 +19,7 @@ classifiers = [
 ]
 dependencies = []
 requires-python = ">=3.8"
+dynamic = ["version"]
 
 [project.optional-dependencies]
 precommit = [
@@ -33,8 +33,8 @@ unittest = [
 [project.urls]
 "Source code" = "https://github.com/paulsuh/githubwikipageindex"
 
-[tool.hatch.version]
-path = "src/foobar/__about__.py"
+#[tool.hatch.version]
+#path = "src/foobar/__about__.py"
 
 [tool.hatch.build.targets.sdist]
 exclude = [
@@ -72,6 +72,12 @@ dependencies = [
 ]
 [tool.hatch.envs.types.scripts]
 check = "mypy --install-types --non-interactive {args:src/foobar tests}"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "_version.py"
 
 [tool.coverage.run]
 source_pkgs = ["src"]
